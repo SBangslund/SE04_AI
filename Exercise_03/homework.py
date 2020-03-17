@@ -1,21 +1,23 @@
 '''
-Modify the program from last class to implement the greedy best first and
-A* search for this graph. Compare solution paths. Play with the heuristics
-and see what different heuristic functions would yield as solutions.
+You should be able to use much of the code from the first homework. You
+will need to make a few changes though.
 
-Play with weighted A* with different weights, and compare.
+1. The state of the search should be represented with three elements: a state,
+a path and a cost. Ultimately, cost is defined as the number of moves taken to
+achieve the goal state from the initial state.
 
-1. A*
-    fringe: [State: ('B', 1, 5) - Depth: 1, State: ('C', 2, 5) - Depth: 1, State: ('D', 4, 2) - Depth: 1]
-    fringe: [State: ('C', 2, 5) - Depth: 1, State: ('D', 4, 2) - Depth: 1, State: ('F', 5, 5) - Depth: 2, State: ('E', 4, 4) - Depth: 2]
-    fringe: [State: ('C', 2, 5) - Depth: 1, State: ('F', 5, 5) - Depth: 2, State: ('E', 4, 4) - Depth: 2, State: ('H', 1, 1) - Depth: 2, State: ('I', 4, 2) - Depth: 2, State: ('J', 2, 1) - Depth: 2]
-    fringe: [State: ('C', 2, 5) - Depth: 1, State: ('F', 5, 5) - Depth: 2, State: ('E', 4, 4) - Depth: 2, State: ('I', 4, 2) - Depth: 2, State: ('J', 2, 1) - Depth: 2, State: ('K', 6, 0) - Depth: 3, State: ('L', 5, 0) - Depth: 3]
-    fringe: [State: ('C', 2, 5) - Depth: 1, State: ('F', 5, 5) - Depth: 2, State: ('E', 4, 4) - Depth: 2, State: ('I', 4, 2) - Depth: 2, State: ('K', 6, 0) - Depth: 3, State: ('L', 5, 0) - Depth: 3]
+2. While moves and paths look the same as before, solutions (output) are the
+path, the cost of the solution and the number of explored nodes.
+
+3. Results:
+    fringe: [State: (('A', 'Clean', 'Dirty'), 1, 2) - Depth: 1, State: (('B', 'Dirty', 'Dirty'), 2, 3) - Depth: 1]
+    fringe: [State: (('B', 'Dirty', 'Dirty'), 2, 3) - Depth: 1, State: (('B', 'Clean', 'Dirty'), 2, 1) - Depth: 2]
+    fringe: [State: (('B', 'Dirty', 'Dirty'), 2, 3) - Depth: 1, State: (('B', 'Clean', 'Clean'), 1, 0) - Depth: 3]
     Solution path:
-    State: ('L', 5, 0) - Depth: 3
-    State: ('H', 1, 1) - Depth: 2
-    State: ('D', 4, 2) - Depth: 1
-    State: ('A', 0, 6) - Depth: 0
+    State: (('B', 'Clean', 'Clean'), 1, 0) - Depth: 3
+    State: (('B', 'Clean', 'Dirty'), 2, 1) - Depth: 2
+    State: (('A', 'Clean', 'Dirty'), 1, 2) - Depth: 1
+    State: (('A', 'Dirty', 'Dirty'), 0, 3) - Depth: 0
 
 '''
 
@@ -134,24 +136,16 @@ def successor_fn(state):  # Lookup list of successor states
     return possible_states  # successor_fn( 'C' ) returns ['F', 'G']
 
 
-INITIAL_STATE = ('A', 0, 6)
-GOAL_STATE = [('K', 6, 0), ('L', 5, 0), ('L', 3, 0)]
-STATE_SPACE = {('A', 0, 6): [('B', 1, 5), ('C', 2, 5), ('D', 4, 2)],
-               ('B', 1, 5): [('F', 5, 5), ('E', 4, 4)],
-               ('C', 2, 5): [('E', 1, 4)],
-               ('D', 4, 2): [('H', 1, 1), ('I', 4, 2), ('J', 2, 1)],
-               ('E', 4, 4): [('G', 2, 4), ('H', 3, 1)],
-               ('E', 1, 4): [('G', 2, 4), ('H', 3, 1)],
-               ('F', 5, 5): [('G', 1, 4)],
-               ('G', 1, 4): [('K', 6, 0)],
-               ('G', 2, 4): [('K', 6, 0)],
-               ('H', 3, 1): [('K', 6, 0), ('L', 5, 0)],
-               ('H', 1, 1): [('K', 6, 0), ('L', 5, 0)],
-               ('I', 4, 2): [('L', 3, 0)],
-               ('J', 2, 1): [],
-               ('K', 6, 0): [],
-               ('L', 5, 0): [],
-               ('L', 3, 0): []
+INITIAL_STATE = (('A', 'Dirty', 'Dirty'), 0, 3)
+GOAL_STATE = [(('A', 'Clean', 'Clean'), 1, 0), (('B', 'Clean', 'Clean'), 1, 0)]
+STATE_SPACE = {(('A', 'Dirty', 'Dirty'), 0, 3): [(('A', 'Clean', 'Dirty'), 1, 2), (('B', 'Dirty', 'Dirty'), 2, 3)],
+               (('A', 'Clean', 'Dirty'), 1, 2): [(('B', 'Clean', 'Dirty'), 2, 1)],
+               (('B', 'Clean', 'Dirty'), 2, 1): [(('B', 'Clean', 'Clean'), 1, 0)],
+               (('B', 'Dirty', 'Dirty'), 2, 3): [(('B', 'Dirty', 'Clean'), 1, 2)],
+               (('B', 'Dirty', 'Clean'), 1, 2): [(('A', 'Dirty', 'Clean'), 2, 1)],
+               (('A', 'Dirty', 'Clean'), 2, 1): [(('A', 'Clean', 'Clean'), 1, 0)],
+               (('A', 'Clean', 'Clean'), 1, 0): [],
+               (('B', 'Clean', 'Clean'), 1, 0): []
                }
 
 '''
