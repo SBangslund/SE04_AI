@@ -49,10 +49,10 @@ def fitness_fn_positive(state):
 
     def conflict(row1, col1, row2, col2):
         return (
-            row1 == row2 or
-            col1 == col2 or
-            row1 - col1 == row2 - col2 or
-            row1 + col1 == row2 + col2
+                row1 == row2 or
+                col1 == col2 or
+                row1 - col1 == row2 - col2 or
+                row1 + col1 == row2 + col2
         )
 
     fitness = 0
