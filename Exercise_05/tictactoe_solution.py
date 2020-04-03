@@ -1,3 +1,57 @@
+'''
+1. What is the branching factor at depth 0? At depth 1?
+    The initial branching factor is 9. As all fields are empty.
+
+2. What is the maximal depth?
+    The depth has a maximum depth of 9 as there will at max only be 9 moves to achieve terminal.
+    (!9 nodes)
+
+3. Will a MIN move attempt to minimize or maximize the utility?
+    It will try to minimize the utility as the search is in X's perspective which means that the
+    worse move for X is the lowest. (Thus what MIN should aim for)
+
+4. Are states after a terminal state explored?
+    No. This if the first condition checked for in the max and min value methods.
+
+5. Are all possible states explored to a terminal state?
+    Yes. They are all explored until the minmax_decision encounters a terminal for that branch.
+
+6. Is this a depth-first or breadth-first search? How do you know?
+    This is a depth-first and can be seen in the following line:
+        action, state = argmax(successors_of(state), lambda a: min_value(a[1]))
+    For each action we find the min_value, but because of the recursive nature between the max
+    and min value methods, these calls upon eachother (down a branch) until terminal is found.
+
+7. Run the MinMac tic-tac-toe program (you will play O)
+    Impossible to win as the AI starts. The best we can do is to put an 'O' in the center for
+    a draw. Otherwise we will lose.
+    -----           -----
+    X 1 2           X 1 2
+    3 4 5           3 4 5
+    6 7 8           6 7 8
+    Your move? 4    Your move? 1
+    -----           -----
+    X X 2           X O 2
+    3 O 5           X 4 5
+    6 7 8           6 7 8
+    Your move? 2    Your move? 6
+    -----           -----
+    X X O           X O 2
+    3 O 5           X X 5
+    X 7 8           O 7 8
+    Your move? 3    Your move? 8
+    -----           -----
+    X X O           X O 2
+    O O X           X X X
+    X 7 8           O 7 O
+    Your move? 7
+    -----
+    X X O
+    O O X
+    X O X
+'''
+
+
 def minmax_decision(state):
     def max_value(state):
         if is_terminal(state):
