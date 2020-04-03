@@ -1,4 +1,5 @@
 def minmax_decision(state):
+
     def max_value(state):
         if is_terminal(state):
             return utility_of(state)
@@ -27,8 +28,6 @@ def is_terminal(state):
     :param state: State of the checkerboard. Ex: [0; 1; 2; 3; X; 5; 6; 7; 8]
     :return:
     """
-    if state.count('X') >= 3:
-        print("Hello")
     pass
 
 
