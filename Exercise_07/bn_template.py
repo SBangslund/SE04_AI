@@ -119,14 +119,16 @@ class Variable(object):
             return
 
         # COMPLETE THIS FUNCTION
-        marginal_probability = {('true',): [1], ('false',): [0]}
-        print("name: ", self.name, " table: ", self.probability_table, " assignments:", self.assignments, " parents:", self.parents)
-        for key in self.probability_table:
-            marginal_probability[key] = 1
-            for value in self.probability_table[key]:
-                marginal_probability[key] *= value
-        print("full: ", marginal_probability)
 
+        marginal_probability = {1: 1, 0: 1}
+
+        for keypair in self.probability_table:
+            # print("keypair: ", keypair)
+            for key in keypair:
+                # print("key: ", key, " assignment:", self.assignments[key])
+                for probability in self.probability_table[keypair]:
+                    # print("probability: ", probability)
+                    marginal_probability[self.assignments[key]] *= probability
         # Set self.marginal_probabilities
         self.marginal_probabilities = marginal_probability
 
@@ -135,7 +137,7 @@ class Variable(object):
 
     def get_marginal_probability(self, val):
         """ returns the marginal probability, to have a certain value """
-        print(self.marginal_probabilities, "[", self.assignments, " [", val, "]]")
+        # print(self.marginal_probabilities, "[", self.assignments, " [", val, "]]")
         return self.marginal_probabilities[self.assignments[val]]
 
     def add_child(self, node):
@@ -218,6 +220,12 @@ class BayesianNetwork(object):
     # values is dictionary
     def get_joint_probability(self, values):
         """ return the joint probability of the Nodes """
+        print(values)
+
+        for node_name in values:
+            node = self.varsMap[node_name]
+            print("assignment: ", node.assignments[values[node_name]])
+            print("marginal: ", node.get_marginal_probability(values[node_name]))
         pass
         # COMPLETE THIS FUNCTION
 
@@ -275,8 +283,8 @@ class BayesianNetwork(object):
 
             # uses Bayes rule, for calculating the conditional probability
             res = (joint_conditional_children * joint_marginal_parents) / (
-                        (joint_conditional_children * joint_marginal_parents) + marginal_of_evidents * (
-                            1 - joint_marginal_parents))
+                    (joint_conditional_children * joint_marginal_parents) + marginal_of_evidents * (
+                    1 - joint_marginal_parents))
 
         return res
 
