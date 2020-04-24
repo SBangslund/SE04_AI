@@ -7,6 +7,15 @@ likely sequence of hidden states.
 The problem is to find out the most likely sequence of states
 of the weather (hot, cold) from a description of the number
 of ice cream eaten by a boy in the summer.
+
+output:
+    Observations: 3 3 1 1 2 2 3 1 3
+    Probability: 1.5832347513504005e-06
+    Path: hot hot hot hot hot cold cold hot hot
+    
+    Observations: 3 3 1 1 2 3 3 1 2
+    Probability: 1.7262432888480009e-06
+    Path: cold cold hot hot hot cold cold hot hot
 """
 
 
@@ -17,9 +26,6 @@ def main():
 
     # To simulate starting from index 1, we add a dummy value at index 0
     observationss = [
-        [None, 3, 3],
-        [None, 3, 1, 3],
-        [None, 3, 1, 1, 3],
         [None, 3, 3, 1, 1, 2, 2, 3, 1, 3],
         [None, 3, 3, 1, 1, 2, 3, 3, 1, 2],
     ]
@@ -111,7 +117,6 @@ def compute_viterbi(states, observations, transitions, emissions):
     for i in range(T - 1, 0, -1):
         trace.append(states[next_index + 1])
         next_index = int(backpointer[next_index + 1, i])
-    print(backpointer)
     return trace
 
 
