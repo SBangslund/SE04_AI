@@ -17,9 +17,9 @@ def main():
 
     # To simulate starting from index 1, we add a dummy value at index 0
     observationss = [
-        [None, 3, 1],
+        [None, 3, 3],
         [None, 3, 1, 3],
-        [None, 3, 3, 1, 3],
+        [None, 3, 1, 1, 3],
         [None, 3, 3, 1, 1, 2, 2, 3, 1, 3],
         [None, 3, 3, 1, 1, 2, 3, 3, 1, 2],
     ]
@@ -46,8 +46,8 @@ def main():
         probability = compute_forward(states, observations, transitions, emissions)
         print("Probability: {}".format(probability))
 
-        # path = compute_viterbi(states, observations, transitions, emissions)
-        # print("Path: {}".format(' '.join(path)))
+        path = compute_viterbi(states, observations, transitions, emissions)
+        print("Path: {}".format(' '.join(path)))
 
         print('')
 
@@ -78,7 +78,41 @@ def compute_forward(states, observations, transitions, emissions):
 
 
 def compute_viterbi(states, observations, transitions, emissions):
-    return []
+    N = len(states)
+    T = len(observations)
+    qf = N - 1
+
+    viterbi = np.empty([N + 2, T])
+    backpointer = np.empty([N, T])
+
+    for s in range(1, N):
+        viterbi[s, 1] = transitions[0, s] * emissions[s, observations[1]]
+        backpointer[s, 1] = 0
+    for t in range(2, T):
+        for s in range(1, N):
+            max_list = []
+            argmax_list = []
+            for s2 in range(1, N):
+                max_list.append(viterbi[s2, t - 1] * transitions[s2, s] * emissions[s, observations[t]])
+                argmax_list.append(viterbi[s2, t - 1] * transitions[s2, s])
+            viterbi[s, t] = max(max_list)
+            backpointer[s, t] = int(argmax(argmax_list))
+
+    max_list = []
+    argmax_list = []
+    for s in range(1, N):
+        max_list.append(viterbi[s, T - 1] * transitions[s, qf])
+        argmax_list.append(viterbi[s, T - 1] * transitions[s, qf])
+    viterbi[qf, T - 1] = max(max_list)
+    backpointer[qf, T - 1] = int(argmax(argmax_list))
+
+    trace = []
+    next_index = int(backpointer[qf, T - 1])
+    for i in range(T - 1, 0, -1):
+        trace.append(states[next_index + 1])
+        next_index = int(backpointer[next_index + 1, i])
+    print(backpointer)
+    return trace
 
 
 def argmax(sequence):
