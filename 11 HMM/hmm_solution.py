@@ -117,6 +117,7 @@ def compute_viterbi(states, observations, transitions, emissions):
     for i in range(T - 1, 0, -1):
         trace.append(states[next_index + 1])
         next_index = int(backpointer[next_index + 1, i])
+    trace.reverse()
     return trace
 
 
