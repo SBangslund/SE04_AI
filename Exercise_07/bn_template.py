@@ -128,7 +128,7 @@ class Variable(object):
                 # print("key: ", key, " assignment:", self.assignments[key])
                 for probability in self.probability_table[keypair]:
                     # print("probability: ", probability)
-                    marginal_probability[self.assignments[key]] *= probability
+                    marginal_probability[self.assignments[key]] += probability
         # Set self.marginal_probabilities
         self.marginal_probabilities = marginal_probability
 
